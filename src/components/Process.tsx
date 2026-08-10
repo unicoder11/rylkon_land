@@ -49,14 +49,14 @@ export function Process() {
             <Reveal key={step.n} delay={((index % 3) + 1) as 1 | 2 | 3}>
               <li className="relative border-t border-[color:var(--line)] py-8 md:border-t-0 md:px-4 md:pt-0 md:first:pl-0 md:last:pr-0">
                 <div className="mb-5 md:mb-7">
-                  <span className="relative z-10 flex h-9 w-9 items-center justify-center rounded-full border border-lime/50 bg-paper font-display text-xs font-bold tabular-nums text-ink shadow-[0_0_0_4px_var(--paper)]">
+                  <span className="relative z-10 flex h-9 w-9 items-center justify-center rounded-full border border-[#5cd2ff]/55 bg-paper font-display text-xs font-bold tabular-nums text-ink shadow-[0_0_0_4px_var(--paper)]">
                     {step.n}
                   </span>
                 </div>
                 <h3 className="font-display text-lg font-semibold tracking-tight text-ink sm:text-xl">
                   {step.title}
                 </h3>
-                <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                <p className="mt-3 text-sm leading-relaxed text-[#4a5568]">
                   {step.body}
                 </p>
               </li>

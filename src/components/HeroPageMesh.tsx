@@ -152,10 +152,10 @@ function buildConcentric(): { pages: Page[]; links: Link[]; guides: number[] } {
       const cy = CY + Math.sin(angle) * ring.radius;
       const x = cx - ring.w / 2;
       const y = cy - ring.h / 2;
-      // Soften under the main copy (center of viewport)
+      // Keep center quieter so the headline owns the stage
       const distToCopy = Math.hypot(cx - CX, cy - CY);
-      const underCopy = distToCopy < 210 ? 0.55 : distToCopy < 300 ? 0.25 : 0;
-      const o = Math.max(0.07, ring.o * (1 - underCopy));
+      const underCopy = distToCopy < 240 ? 0.72 : distToCopy < 330 ? 0.4 : 0.08;
+      const o = Math.max(0.05, ring.o * (1 - underCopy));
 
       const page: Page = {
         id: `${ri}-${i}`,

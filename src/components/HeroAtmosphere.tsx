@@ -1,6 +1,8 @@
 import { HeroPageMesh } from "./HeroPageMesh";
 
-/** Corner light limbs + delicate page mesh behind */
+/**
+ * Mesh leads the metaphor; corner limbs stay as soft atmosphere only.
+ */
 export function HeroAtmosphere() {
   return (
     <div
@@ -10,9 +12,9 @@ export function HeroAtmosphere() {
       <HeroPageMesh />
 
       <div className="hero-bloom hero-bloom--tr" />
-      {/* Single dominant limb + quieter companion */}
-      <div className="hero-limb hero-limb--tr" />
-      <div className="hero-limb hero-limb--bl" />
+      <div className="hero-bloom hero-bloom--bl" />
+      {/* Single quieter limb — mesh owns the story */}
+      <div className="hero-limb hero-limb--tr opacity-45" />
 
       <div className="hero-hairline" />
       <div className="hero-center-shade" />

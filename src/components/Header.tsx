@@ -7,6 +7,7 @@ const links = [
   { href: "#approach", label: "Approach" },
   { href: "#systems", label: "Systems" },
   { href: "#process", label: "Process" },
+  { href: "#faq", label: "FAQ" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -39,10 +40,10 @@ export function Header() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 transition-[background-color,border-color,backdrop-filter] duration-300 ${
+      className={`fixed inset-x-0 top-0 z-40 transition-[background-color,border-color,box-shadow,backdrop-filter] duration-500 ${
         scrolled || open
-          ? "border-b border-[color:var(--line)] bg-paper/95 text-ink backdrop-blur-md"
-          : "border-b border-transparent bg-transparent text-paper"
+          ? "border-b border-black/[0.06] bg-paper/90 text-ink shadow-[0_1px_0_rgba(0,0,0,0.04)] backdrop-blur-md"
+          : "border-b border-transparent bg-transparent text-paper shadow-none"
       }`}
     >
       <div className="mx-auto grid max-w-6xl grid-cols-[1fr_auto] items-center gap-4 px-5 py-3.5 sm:px-8 md:grid-cols-[1fr_auto_1fr]">
@@ -56,7 +57,7 @@ export function Header() {
         </a>
 
         <nav
-          className={`hidden items-center gap-7 text-[0.8rem] font-medium tracking-wide md:flex ${
+          className={`hidden items-center gap-5 text-[0.8rem] font-medium tracking-wide lg:gap-7 md:flex ${
             scrolled ? "text-ink-soft" : "text-white/75"
           }`}
         >
@@ -87,13 +88,14 @@ export function Header() {
           <a
             href="#contact"
             onClick={close}
-            className={`btn-primary hidden rounded-full px-4 py-2 text-sm font-semibold transition-colors sm:inline-flex ${
+            className={`btn-primary inline-flex rounded-full px-3.5 py-2 text-sm font-semibold transition-colors sm:px-4 ${
               scrolled || open
-                ? "bg-ink text-paper hover:bg-lime-ink"
+                ? "bg-ink text-paper hover:bg-[#0a2a3a]"
                 : "bg-[#5cd2ff] text-[#041018] shadow-[0_0_28px_rgba(92,210,255,0.45)] hover:bg-[#7adfff]"
             }`}
           >
-            Get in touch
+            <span className="sm:hidden">Contact</span>
+            <span className="hidden sm:inline">Get in touch</span>
           </a>
 
           <button

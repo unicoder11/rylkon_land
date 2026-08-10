@@ -18,24 +18,42 @@ const audiences = [
 
 export function Audience() {
   return (
-    <section id="audience" className="relative overflow-hidden bg-ink text-paper">
+    <section
+      id="audience"
+      className="relative overflow-hidden bg-ink text-paper"
+    >
       <div
         aria-hidden="true"
-        className="absolute -right-16 top-0 h-64 w-64 rounded-full bg-lime/10 blur-3xl"
+        className="absolute -right-20 top-0 h-80 w-80 rounded-full bg-[#5cd2ff]/12 blur-3xl"
       />
-      <div className="relative mx-auto max-w-6xl px-5 py-24 sm:px-8 lg:py-28">
+      <div
+        aria-hidden="true"
+        className="absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-[#ff4d8d]/8 blur-3xl"
+      />
+
+      <div className="relative mx-auto max-w-6xl px-5 py-24 sm:px-8 lg:py-32">
         <Reveal>
-          <SectionLabel tone="lime">Who it’s for</SectionLabel>
-          <h2 className="mt-4 max-w-xl font-display text-[clamp(2rem,4vw,2.85rem)] font-semibold leading-[1.06] tracking-[-0.035em]">
+          <p className="font-display text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-paper/40">
+            Chapter
+          </p>
+          <SectionLabel tone="cyan">Who it’s for</SectionLabel>
+          <h2 className="mt-4 max-w-2xl font-display text-[clamp(2.1rem,4.2vw,3.1rem)] font-semibold leading-[1.05] tracking-[-0.035em]">
             Best fit when you have data — and a reason to scale it into search.
           </h2>
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-paper/60 sm:text-lg">
+            If your moat is structured truth, programmatic pages can compound.
+            If not, we say so early.
+          </p>
         </Reveal>
 
-        <div className="mt-14 grid gap-10 md:grid-cols-3 md:gap-12">
+        <div className="mt-16 grid gap-10 md:grid-cols-3 md:gap-12">
           {audiences.map((item, index) => (
             <Reveal key={item.title} delay={((index % 3) + 1) as 1 | 2 | 3}>
-              <article className="border-t border-paper/12 pt-6">
-                <h3 className="font-display text-xl font-semibold tracking-tight">
+              <article className="border-t border-paper/15 pt-7">
+                <p className="font-display text-[0.7rem] font-semibold tracking-[0.18em] text-[#5cd2ff]">
+                  {String(index + 1).padStart(2, "0")}
+                </p>
+                <h3 className="mt-3 font-display text-xl font-semibold tracking-tight">
                   {item.title}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-paper/65 sm:text-base">
