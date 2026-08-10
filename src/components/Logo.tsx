@@ -26,10 +26,10 @@ const sizes = {
     word: "text-[1.55rem] tracking-[0.16em]",
   },
   hero: {
-    root: "gap-4 sm:gap-6",
-    mark: "h-[4.1rem] w-[4.1rem] sm:h-[5rem] sm:w-[5rem]",
+    root: "gap-3.5 sm:gap-5",
+    mark: "h-[3.15rem] w-[3.15rem] sm:h-[3.75rem] sm:w-[3.75rem]",
     word:
-      "text-[clamp(2.55rem,6.2vw,3.6rem)] tracking-[0.18em] sm:tracking-[0.2em]",
+      "text-[clamp(2.05rem,4.8vw,2.85rem)] tracking-[0.18em] sm:tracking-[0.2em]",
   },
 } as const;
 

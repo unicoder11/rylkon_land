@@ -23,6 +23,12 @@ export function Footer() {
           <a href="#contact" className="link-underline hover:text-ink">
             Contact
           </a>
+          <a
+            href="mailto:hello@rylkon.com"
+            className="link-underline hover:text-ink"
+          >
+            hello@rylkon.com
+          </a>
           <span className="text-ink/35">© {new Date().getFullYear()}</span>
         </div>
       </div>

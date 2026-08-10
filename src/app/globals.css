@@ -154,65 +154,79 @@ body::before {
 }
 
 .hero-page-mesh {
-  opacity: 1;
+  opacity: 0.85;
+  animation: mesh-breathe 18s ease-in-out infinite;
+  transform-origin: 50% 50%;
 }
 
-/* Soft cyan bloom — light, so the rim stays crisp */
+@keyframes mesh-breathe {
+  0%,
+  100% {
+    opacity: 0.78;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.012);
+  }
+}
+
+/* Soft cyan bloom — restrained */
 .hero-bloom {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(36px);
-  opacity: 0.4;
+  filter: blur(28px);
+  opacity: 0.32;
 }
 
 .hero-bloom--tr {
-  top: -38%;
-  right: -18%;
-  width: min(78vw, 720px);
-  height: min(78vw, 720px);
+  top: -36%;
+  right: -16%;
+  width: min(72vw, 680px);
+  height: min(72vw, 680px);
   background: radial-gradient(
     closest-side,
-    transparent 62%,
-    rgba(70, 190, 255, 0.4) 74%,
-    transparent 88%
+    transparent 64%,
+    rgba(70, 190, 255, 0.35) 76%,
+    transparent 90%
   );
 }
 
 .hero-bloom--bl {
-  bottom: -42%;
-  left: -24%;
-  width: min(86vw, 800px);
-  height: min(86vw, 800px);
+  bottom: -40%;
+  left: -22%;
+  width: min(80vw, 760px);
+  height: min(80vw, 760px);
   background: radial-gradient(
     closest-side,
-    transparent 62%,
-    rgba(60, 180, 255, 0.35) 74%,
-    transparent 88%
+    transparent 64%,
+    rgba(60, 180, 255, 0.3) 76%,
+    transparent 90%
   );
 }
 
-/* Clean neon limbs */
+/* Clean neon limbs — thinner presence */
 .hero-limb {
   position: absolute;
   background: url("/hero/light-ring.png") center / contain no-repeat;
   mix-blend-mode: screen;
-  filter: brightness(1.35) saturate(1.15);
+  filter: brightness(1.2) saturate(1.1);
   pointer-events: none;
 }
 
 .hero-limb--tr {
-  top: -44%;
-  right: -30%;
-  width: min(105vw, 960px);
-  height: min(105vw, 960px);
+  top: -40%;
+  right: -26%;
+  width: min(96vw, 880px);
+  height: min(96vw, 880px);
 }
 
 .hero-limb--bl {
-  bottom: -50%;
-  left: -36%;
-  width: min(115vw, 1040px);
-  height: min(115vw, 1040px);
+  bottom: -46%;
+  left: -32%;
+  width: min(104vw, 960px);
+  height: min(104vw, 960px);
 }
 
 .hero-hairline {
@@ -268,25 +282,13 @@ body::before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.85rem 1.65rem;
+  padding: 0.85rem 1.7rem;
   font-size: 0.9rem;
   font-weight: 700;
   color: #041018;
   background: #5cd2ff;
-  clip-path: polygon(
-    10px 0,
-    calc(100% - 10px) 0,
-    100% 10px,
-    100% calc(100% - 10px),
-    calc(100% - 10px) 100%,
-    10px 100%,
-    0 calc(100% - 10px),
-    0 10px
-  );
-  box-shadow:
-    0 0 0 1px rgba(92, 210, 255, 0.9),
-    0 0 36px rgba(92, 210, 255, 0.45),
-    4px 4px 0 rgba(92, 210, 255, 0.25);
+  border-radius: 9999px;
+  box-shadow: 0 0 32px rgba(92, 210, 255, 0.4);
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease,
@@ -296,10 +298,7 @@ body::before {
 .hero-cta:hover {
   transform: translateY(-1px);
   background: #7adfff;
-  box-shadow:
-    0 0 0 1px rgba(122, 223, 255, 0.95),
-    0 0 48px rgba(92, 210, 255, 0.55),
-    5px 5px 0 rgba(92, 210, 255, 0.3);
+  box-shadow: 0 0 42px rgba(92, 210, 255, 0.55);
 }
 
 .hero-social-frame {
@@ -348,11 +347,12 @@ body::before {
 }
 
 .reveal {
-  opacity: 0;
-  transform: translateY(28px);
+  /* Stay readable before enter — avoids “broken faded” sections mid-scroll */
+  opacity: 0.42;
+  transform: translateY(18px);
   transition:
-    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .reveal.is-visible {
@@ -429,7 +429,8 @@ body::before {
   .animate-rise-delay-2,
   .animate-rise-delay-3,
   .hero-glow,
-  .hero-ambient {
+  .hero-ambient,
+  .hero-page-mesh {
     animation: none !important;
   }
 

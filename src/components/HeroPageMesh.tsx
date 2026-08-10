@@ -1,13 +1,12 @@
 /**
- * Page silhouettes linked as a delicate mesh network.
+ * Concentric page mesh — symmetric rings of page silhouettes around center.
  */
 
-const COLS = 10;
-const ROWS = 7;
+const CX = 720;
+const CY = 448;
 
 type Page = {
-  i: number;
-  j: number;
+  id: string;
   x: number;
   y: number;
   w: number;
@@ -16,6 +15,8 @@ type Page = {
   variant: number;
   cx: number;
   cy: number;
+  ring: number;
+  index: number;
 };
 
 type Link = {
@@ -25,6 +26,14 @@ type Link = {
   y2: number;
   o: number;
 };
+
+/** Rings from center out: count, radius, page size, opacity */
+const RINGS = [
+  { count: 6, radius: 168, w: 42, h: 56, o: 0.14 },
+  { count: 10, radius: 268, w: 46, h: 62, o: 0.22 },
+  { count: 14, radius: 372, w: 50, h: 68, o: 0.3 },
+  { count: 16, radius: 478, w: 52, h: 70, o: 0.26 },
+] as const;
 
 function PageContent({
   x,
@@ -43,7 +52,6 @@ function PageContent({
   const left = x + padX;
   const right = x + w - padX;
   const top = y + h * 0.14;
-
   const titleW = w * (0.42 + (variant % 3) * 0.1);
   const lines = [
     { y: top + h * 0.16, w: 0.68 },
@@ -52,7 +60,6 @@ function PageContent({
     { y: top + h * 0.46, w: 0.72 },
     { y: top + h * 0.56, w: 0.48 },
   ];
-
   const showBlock = variant % 4 !== 1;
   const showMeta = variant % 3 === 0;
 
@@ -130,109 +137,95 @@ function PageContent({
   );
 }
 
-function buildGrid(): { pages: Page[]; links: Link[] } {
+function buildConcentric(): { pages: Page[]; links: Link[]; guides: number[] } {
   const pages: Page[] = [];
-  const grid: Page[][] = Array.from({ length: ROWS }, () => []);
+  const byRing: Page[][] = [];
 
-  for (let j = 0; j < ROWS; j++) {
-    for (let i = 0; i < COLS; i++) {
-      const u = i / (COLS - 1);
-      const v = j / (ROWS - 1);
-      const scale = 0.5 + v * 0.65;
-      const w = 48 * scale;
-      const h = 64 * scale;
-      const gapX = 22 * scale;
-      const gapY = 20 * scale;
-      const x = 380 + i * (w + gapX) + v * 28;
-      const y = 90 + j * (h + gapY) + u * 6;
-      const distCx = Math.abs(u - 0.45);
-      const distCy = Math.abs(v - 0.4);
-      const underCopy =
-        Math.max(0, 1 - distCx * 3.2) * Math.max(0, 1 - distCy * 2.4);
-      const o = Math.max(
-        0.1,
-        0.36 * (0.35 + u * 0.65) * (0.5 + v * 0.5) * (1 - underCopy * 0.75),
-      );
+  RINGS.forEach((ring, ri) => {
+    const ringPages: Page[] = [];
+    // Offset alternate rings by half-step for nested look, still rotationally symmetric
+    const phase = ri % 2 === 0 ? -Math.PI / 2 : -Math.PI / 2 + Math.PI / ring.count;
+
+    for (let i = 0; i < ring.count; i++) {
+      const angle = phase + (Math.PI * 2 * i) / ring.count;
+      const cx = CX + Math.cos(angle) * ring.radius;
+      const cy = CY + Math.sin(angle) * ring.radius;
+      const x = cx - ring.w / 2;
+      const y = cy - ring.h / 2;
+      // Soften under the main copy (center of viewport)
+      const distToCopy = Math.hypot(cx - CX, cy - CY);
+      const underCopy = distToCopy < 210 ? 0.55 : distToCopy < 300 ? 0.25 : 0;
+      const o = Math.max(0.07, ring.o * (1 - underCopy));
+
       const page: Page = {
-        i,
-        j,
+        id: `${ri}-${i}`,
         x,
         y,
-        w,
-        h,
+        w: ring.w,
+        h: ring.h,
         o,
-        variant: (i * 3 + j * 5) % 6,
-        cx: x + w / 2,
-        cy: y + h / 2,
+        variant: (ri * 5 + i * 3) % 6,
+        cx,
+        cy,
+        ring: ri,
+        index: i,
       };
+      ringPages.push(page);
       pages.push(page);
-      grid[j][i] = page;
     }
-  }
+    byRing.push(ringPages);
+  });
 
   const links: Link[] = [];
 
-  const connect = (
-    a: Page,
-    b: Page,
-    from: "right" | "bottom" | "br" | "bl",
-  ) => {
-    let x1 = a.cx;
-    let y1 = a.cy;
-    let x2 = b.cx;
-    let y2 = b.cy;
-
-    if (from === "right") {
-      x1 = a.x + a.w;
-      y1 = a.cy;
-      x2 = b.x;
-      y2 = b.cy;
-    } else if (from === "bottom") {
-      x1 = a.cx;
-      y1 = a.y + a.h;
-      x2 = b.cx;
-      y2 = b.y;
-    } else if (from === "br") {
-      x1 = a.x + a.w;
-      y1 = a.y + a.h;
-      x2 = b.x;
-      y2 = b.y;
-    } else {
-      x1 = a.x;
-      y1 = a.y + a.h;
-      x2 = b.x + b.w;
-      y2 = b.y;
-    }
-
-    links.push({
-      x1,
-      y1,
-      x2,
-      y2,
-      o: Math.min(a.o, b.o) * 0.85,
-    });
-  };
-
-  for (let j = 0; j < ROWS; j++) {
-    for (let i = 0; i < COLS; i++) {
-      const p = grid[j][i];
-      // Orthogonal mesh
-      if (i < COLS - 1) connect(p, grid[j][i + 1], "right");
-      if (j < ROWS - 1) connect(p, grid[j + 1][i], "bottom");
-      // Sparse diagonals for network feel
-      if (i < COLS - 1 && j < ROWS - 1 && (i + j) % 2 === 0) {
-        connect(p, grid[j + 1][i + 1], "br");
-      }
-      if (i > 0 && j < ROWS - 1 && (i + j) % 3 === 0) {
-        connect(p, grid[j + 1][i - 1], "bl");
-      }
+  // Ring neighbors (closed loops)
+  for (const ringPages of byRing) {
+    const n = ringPages.length;
+    for (let i = 0; i < n; i++) {
+      const a = ringPages[i];
+      const b = ringPages[(i + 1) % n];
+      links.push({
+        x1: a.cx,
+        y1: a.cy,
+        x2: b.cx,
+        y2: b.cy,
+        o: Math.min(a.o, b.o) * 0.7,
+      });
     }
   }
 
-  return { pages, links };
+  // Spokes: connect each page to nearest on adjacent outer ring
+  for (let ri = 0; ri < byRing.length - 1; ri++) {
+    const inner = byRing[ri];
+    const outer = byRing[ri + 1];
+    for (const a of inner) {
+      let best = outer[0];
+      let bestD = Infinity;
+      for (const b of outer) {
+        const d = Math.hypot(a.cx - b.cx, a.cy - b.cy);
+        if (d < bestD) {
+          bestD = d;
+          best = b;
+        }
+      }
+      links.push({
+        x1: a.cx,
+        y1: a.cy,
+        x2: best.cx,
+        y2: best.cy,
+        o: Math.min(a.o, best.o) * 0.55,
+      });
+    }
+  }
+
+  return {
+    pages,
+    links,
+    guides: RINGS.map((r) => r.radius),
+  };
 }
 
-const { pages, links } = buildGrid();
+const { pages, links, guides } = buildConcentric();
 
 export function HeroPageMesh() {
   return (
@@ -243,7 +236,19 @@ export function HeroPageMesh() {
       preserveAspectRatio="xMidYMid slice"
       fill="none"
     >
-      {/* Links behind pages */}
+      {/* Faint concentric guide rings */}
+      <g stroke="currentColor" strokeWidth="0.6">
+        {guides.map((r) => (
+          <circle
+            key={r}
+            cx={CX}
+            cy={CY}
+            r={r}
+            opacity="0.06"
+          />
+        ))}
+      </g>
+
       <g stroke="currentColor" strokeLinecap="round">
         {links.map((l, idx) => (
           <line
@@ -252,29 +257,27 @@ export function HeroPageMesh() {
             y1={l.y1}
             x2={l.x2}
             y2={l.y2}
-            strokeWidth="0.7"
-            opacity={l.o * 0.55}
+            strokeWidth="0.65"
+            opacity={l.o * 0.45}
           />
         ))}
       </g>
 
-      {/* Nodes at page centers — tiny mesh joints */}
       <g fill="currentColor" stroke="none">
         {pages.map((p) => (
           <circle
-            key={`n-${p.i}-${p.j}`}
+            key={`n-${p.id}`}
             cx={p.cx}
             cy={p.cy}
-            r={1.1}
+            r={1.15}
             opacity={p.o * 0.45}
           />
         ))}
       </g>
 
-      {/* Pages on top */}
       <g stroke="currentColor" strokeWidth="1">
         {pages.map((p) => (
-          <g key={`p-${p.i}-${p.j}`} opacity={p.o}>
+          <g key={p.id} opacity={p.o}>
             <rect
               x={p.x}
               y={p.y}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Logo } from "./Logo";
 
 const links = [
@@ -12,6 +12,8 @@ const links = [
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const menuId = useId();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -20,11 +22,26 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  const close = () => setOpen(false);
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-40 transition-[background-color,border-color,backdrop-filter] duration-300 ${
-        scrolled
-          ? "border-b border-[color:var(--line)] bg-paper/90 text-ink backdrop-blur-md"
+        scrolled || open
+          ? "border-b border-[color:var(--line)] bg-paper/95 text-ink backdrop-blur-md"
           : "border-b border-transparent bg-transparent text-paper"
       }`}
     >
@@ -33,13 +50,14 @@ export function Header() {
           href="#top"
           className="justify-self-start rounded-md transition-opacity hover:opacity-80"
           aria-label="Rylkon home"
+          onClick={close}
         >
-          <Logo size="sm" tone={scrolled ? "ink" : "paper"} />
+          <Logo size="sm" tone={scrolled || open ? "ink" : "paper"} />
         </a>
 
         <nav
           className={`hidden items-center gap-7 text-[0.8rem] font-medium tracking-wide md:flex ${
-            scrolled ? "text-ink-soft" : "text-white/55"
+            scrolled ? "text-ink-soft" : "text-white/75"
           }`}
         >
           {links.map((link) => (
@@ -55,9 +73,9 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center justify-self-end gap-3 sm:gap-4">
-          {!scrolled ? (
-            <span className="hidden items-center gap-2 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/50 lg:inline-flex">
+        <div className="flex items-center justify-self-end gap-2 sm:gap-3">
+          {!scrolled && !open ? (
+            <span className="hidden items-center gap-2 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/70 lg:inline-flex">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inset-0 animate-ping rounded-full bg-[#d4e85c]/70" />
                 <span className="relative h-1.5 w-1.5 rounded-full bg-[#d4e85c]" />
@@ -65,18 +83,79 @@ export function Header() {
               Open for projects
             </span>
           ) : null}
+
           <a
             href="#contact"
-            className={`btn-primary rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-              scrolled
+            onClick={close}
+            className={`btn-primary hidden rounded-full px-4 py-2 text-sm font-semibold transition-colors sm:inline-flex ${
+              scrolled || open
                 ? "bg-ink text-paper hover:bg-lime-ink"
                 : "bg-[#5cd2ff] text-[#041018] shadow-[0_0_28px_rgba(92,210,255,0.45)] hover:bg-[#7adfff]"
             }`}
           >
             Get in touch
           </a>
+
+          <button
+            type="button"
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-full border md:hidden ${
+              scrolled || open
+                ? "border-[color:var(--line)] text-ink"
+                : "border-white/20 text-white"
+            }`}
+            aria-expanded={open}
+            aria-controls={menuId}
+            aria-label={open ? "Close menu" : "Open menu"}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span className="sr-only">{open ? "Close" : "Menu"}</span>
+            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" aria-hidden>
+              {open ? (
+                <path
+                  d="M5 5l10 10M15 5 5 15"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+              ) : (
+                <path
+                  d="M4 6h12M4 10h12M4 14h12"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+              )}
+            </svg>
+          </button>
         </div>
       </div>
+
+      {open ? (
+        <div
+          id={menuId}
+          className="border-t border-[color:var(--line)] bg-paper md:hidden"
+        >
+          <nav className="mx-auto flex max-w-6xl flex-col px-5 py-4 sm:px-8">
+            {links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={close}
+                className="border-b border-[color:var(--line)] py-3.5 text-base font-medium text-ink last:border-b-0"
+              >
+                {link.label}
+              </a>
+            ))}
+            <a
+              href="#contact"
+              onClick={close}
+              className="btn-primary mt-4 inline-flex items-center justify-center rounded-full bg-[#5cd2ff] px-4 py-3 text-sm font-semibold text-[#041018]"
+            >
+              Get in touch
+            </a>
+          </nav>
+        </div>
+      ) : null}
     </header>
   );
 }

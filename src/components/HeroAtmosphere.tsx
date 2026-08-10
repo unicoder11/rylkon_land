@@ -7,12 +7,10 @@ export function HeroAtmosphere() {
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 overflow-hidden bg-black"
     >
-      {/* Page silhouettes — delicate, behind rings */}
       <HeroPageMesh />
 
       <div className="hero-bloom hero-bloom--tr" />
-      <div className="hero-bloom hero-bloom--bl" />
-
+      {/* Single dominant limb + quieter companion */}
       <div className="hero-limb hero-limb--tr" />
       <div className="hero-limb hero-limb--bl" />
 
