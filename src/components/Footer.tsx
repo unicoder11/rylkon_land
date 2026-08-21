@@ -1,14 +1,13 @@
-import { Logo } from "./Logo";
+"use client";
 
-const links = [
-  { href: "#approach", label: "Approach" },
-  { href: "#systems", label: "Systems" },
-  { href: "#process", label: "Process" },
-  { href: "#faq", label: "FAQ" },
-  { href: "#contact", label: "Contact" },
-];
+import { Logo } from "./Logo";
+import { LanguageSwitcher } from "@/i18n/LanguageSwitcher";
+import { useI18n } from "@/i18n/LanguageProvider";
 
 export function Footer() {
+  const { t } = useI18n();
+  const links = t.footer.links;
+
   return (
     <footer className="relative overflow-hidden border-t border-white/10 bg-ink text-paper">
       <div
@@ -19,7 +18,7 @@ export function Footer() {
         <div>
           <Logo size="sm" tone="paper" />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-paper/60">
-            Programmatic SEO systems that earn their place in the index.
+            {t.footer.blurb}
           </p>
           <a
             href="mailto:hello@rylkon.com"
@@ -30,7 +29,8 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col gap-6 sm:items-end">
-          <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-paper/65">
+          <LanguageSwitcher tone="light" compact />
+          <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-paper/65 sm:justify-end">
             {links.map((link) => (
               <a
                 key={link.href}

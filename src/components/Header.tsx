@@ -2,19 +2,15 @@
 
 import { useEffect, useId, useState } from "react";
 import { Logo } from "./Logo";
-
-const links = [
-  { href: "#approach", label: "Approach" },
-  { href: "#systems", label: "Systems" },
-  { href: "#process", label: "Process" },
-  { href: "#faq", label: "FAQ" },
-  { href: "#contact", label: "Contact" },
-];
+import { LanguageSwitcher } from "@/i18n/LanguageSwitcher";
+import { useI18n } from "@/i18n/LanguageProvider";
 
 export function Header() {
+  const { t } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const menuId = useId();
+  const links = t.nav.links;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -37,6 +33,7 @@ export function Header() {
   }, [open]);
 
   const close = () => setOpen(false);
+  const switcherTone = scrolled || open ? "dark" : "light";
 
   return (
     <header
@@ -50,7 +47,7 @@ export function Header() {
         <a
           href="#top"
           className="justify-self-start rounded-md transition-opacity hover:opacity-80"
-          aria-label="Rylkon home"
+          aria-label={t.nav.homeAria}
           onClick={close}
         >
           <Logo size="sm" tone={scrolled || open ? "ink" : "paper"} />
@@ -75,15 +72,9 @@ export function Header() {
         </nav>
 
         <div className="flex items-center justify-self-end gap-2 sm:gap-3">
-          {!scrolled && !open ? (
-            <span className="hidden items-center gap-2 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/70 lg:inline-flex">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inset-0 animate-ping rounded-full bg-[#d4e85c]/70" />
-                <span className="relative h-1.5 w-1.5 rounded-full bg-[#d4e85c]" />
-              </span>
-              Open for projects
-            </span>
-          ) : null}
+          <div className="hidden sm:block">
+            <LanguageSwitcher tone={switcherTone} compact />
+          </div>
 
           <a
             href="#contact"
@@ -94,8 +85,8 @@ export function Header() {
                 : "bg-[#5cd2ff] text-[#041018] shadow-[0_0_28px_rgba(92,210,255,0.45)] hover:bg-[#7adfff]"
             }`}
           >
-            <span className="sm:hidden">Contact</span>
-            <span className="hidden sm:inline">Get in touch</span>
+            <span className="sm:hidden">{t.nav.contactShort}</span>
+            <span className="hidden sm:inline">{t.nav.contactLong}</span>
           </a>
 
           <button
@@ -107,10 +98,10 @@ export function Header() {
             }`}
             aria-expanded={open}
             aria-controls={menuId}
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
             onClick={() => setOpen((v) => !v)}
           >
-            <span className="sr-only">{open ? "Close" : "Menu"}</span>
+            <span className="sr-only">{open ? t.nav.close : t.nav.menu}</span>
             <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" aria-hidden>
               {open ? (
                 <path
@@ -148,13 +139,16 @@ export function Header() {
                 {link.label}
               </a>
             ))}
-            <a
-              href="#contact"
-              onClick={close}
-              className="btn-primary mt-4 inline-flex items-center justify-center rounded-full bg-[#5cd2ff] px-4 py-3 text-sm font-semibold text-[#041018]"
-            >
-              Get in touch
-            </a>
+            <div className="mt-4 flex items-center justify-between gap-3">
+              <LanguageSwitcher tone="dark" />
+              <a
+                href="#contact"
+                onClick={close}
+                className="btn-primary inline-flex flex-1 items-center justify-center rounded-full bg-[#5cd2ff] px-4 py-3 text-sm font-semibold text-[#041018]"
+              >
+                {t.nav.contactLong}
+              </a>
+            </div>
           </nav>
         </div>
       ) : null}

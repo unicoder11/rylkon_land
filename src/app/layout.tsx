@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, DM_Sans, Rajdhani } from "next/font/google";
+import { DocumentMeta } from "@/components/DocumentMeta";
 import { JsonLd } from "@/components/JsonLd";
 import { SkipLink } from "@/components/SkipLink";
+import { LanguageProvider } from "@/i18n/LanguageProvider";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -37,6 +39,7 @@ export const metadata: Metadata = {
     "indexing",
     "template SEO",
     "Rylkon",
+    "SEO programático",
   ],
   authors: [{ name: "Rylkon" }],
   icons: {
@@ -48,6 +51,7 @@ export const metadata: Metadata = {
       "Templates, structured data, and indexing discipline for organic growth that compounds.",
     type: "website",
     locale: "en_US",
+    alternateLocale: ["es_ES"],
     siteName: "Rylkon",
     url: "https://rylkon.com",
   },
@@ -72,11 +76,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${dmSans.variable} ${spaceGrotesk.variable} ${rajdhani.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col font-sans text-ink">
-        <JsonLd />
-        <SkipLink />
-        {children}
+        <LanguageProvider>
+          <DocumentMeta />
+          <JsonLd />
+          <SkipLink />
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

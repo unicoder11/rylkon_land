@@ -1,22 +1,13 @@
+"use client";
+
 import { Reveal } from "./Reveal";
 import { SectionLabel } from "./SectionLabel";
-
-const audiences = [
-  {
-    title: "SaaS & platforms",
-    body: "Own integration, comparison, and use-case queries where buyers are already deciding.",
-  },
-  {
-    title: "Marketplaces",
-    body: "Turn inventory and location data into crawlable coverage — without drowning the index.",
-  },
-  {
-    title: "Data-rich products",
-    body: "Publish proprietary datasets as useful pages that compound reach over time.",
-  },
-];
+import { useI18n } from "@/i18n/LanguageProvider";
 
 export function Audience() {
+  const { t } = useI18n();
+  const { audience } = t;
+
   return (
     <section
       id="audience"
@@ -34,20 +25,19 @@ export function Audience() {
       <div className="relative mx-auto max-w-6xl px-5 py-24 sm:px-8 lg:py-32">
         <Reveal>
           <p className="font-display text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-paper/40">
-            Chapter
+            {audience.chapter}
           </p>
-          <SectionLabel tone="cyan">Who it’s for</SectionLabel>
+          <SectionLabel tone="cyan">{audience.label}</SectionLabel>
           <h2 className="mt-4 max-w-2xl font-display text-[clamp(2.1rem,4.2vw,3.1rem)] font-semibold leading-[1.05] tracking-[-0.035em]">
-            Best fit when you have data — and a reason to scale it into search.
+            {audience.title}
           </h2>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-paper/60 sm:text-lg">
-            If your moat is structured truth, programmatic pages can compound.
-            If not, we say so early.
+            {audience.body}
           </p>
         </Reveal>
 
         <div className="mt-16 grid gap-10 md:grid-cols-3 md:gap-12">
-          {audiences.map((item, index) => (
+          {audience.items.map((item, index) => (
             <Reveal key={item.title} delay={((index % 3) + 1) as 1 | 2 | 3}>
               <article className="border-t border-paper/15 pt-7">
                 <p className="font-display text-[0.7rem] font-semibold tracking-[0.18em] text-[#5cd2ff]">
